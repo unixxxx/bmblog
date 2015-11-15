@@ -11,14 +11,14 @@ class CommentInline(admin.TabularInline):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['user', 'comment', 'date']
-    list_filter = ['user', 'date']
+    list_filter = ['user__username', 'date']
     search_fields = ['comment']
 
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['user', 'title', 'date']
-    list_filter = ['user', 'categories', 'active', 'date']
+    list_filter = ['user__username', 'categories', 'active', 'date']
     search_fields = ['title']
     prepopulated_fields = {'slug': ('title',), }
     inlines = [CommentInline]
