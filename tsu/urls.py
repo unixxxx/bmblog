@@ -17,5 +17,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
+    url(r'^$', 'blog.views.home', name='home'),
+    url(r'^user/register$', 'blog.views.register', name='register'),
+    url(r'^user/login', 'blog.views.login', name='login'),
+    url(r'^user/logout', 'blog.views.logout', name='logout'),
     url(r'^admin/', include(admin.site.urls)),
 ]
