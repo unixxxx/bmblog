@@ -74,8 +74,8 @@ class Post(models.Model):
 
 
 class Post_Category(models.Model):
-    post = models.ForeignKey(Post)
-    category = models.ForeignKey(Category)
+    post = models.ForeignKey(Post, null=True, blank=True)
+    category = models.ForeignKey(Category, null=True, blank=True)
 
     class Meta:
         verbose_name = 'category'

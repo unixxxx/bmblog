@@ -2,11 +2,11 @@ from django.contrib.auth import login as user_login, logout as user_logout, auth
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.text import slugify
 
-from .forms import UserRegisterForm, LoginForm, CommentForm, PostForm, CategoryFormSet
+from .forms import UserRegisterForm, LoginForm, CommentForm, PostForm, CategoryFormSet, CategoryForm
 from .models import Post, Category, Comment
 
 
@@ -89,7 +89,20 @@ def edit_post(request, slug=None):
             pass
         instance.slug = slugified
         instance.save()
-        form.save_m2m()
+        if formset.is_valid():
+            for f in formset:
+                categ = f.save(commit=False)
+                try:
+                    if f.cleaned_data['DELETE'] and categ.id is not None:
+                        categ.delete()
+                    elif f.cleaned_data['DELETE'] and categ.id is None:
+                        pass
+                    else:
+                        categ.post = instance
+                        categ.save()
+                except:
+                    pass
+        # form.save_m2m()
         return redirect(reverse('profile'))
     data = {
         'form': form,
@@ -102,7 +115,9 @@ def edit_post(request, slug=None):
 def add_post(request):
     form = PostForm(request.POST or None)
     formset = CategoryFormSet(request.POST or None)
-    print(form.instance)
+    categoryform = CategoryForm(request.POST or None)
+
+
     if form.is_valid():
         instance = form.save(commit=False)
         instance.user = request.user
@@ -114,10 +129,15 @@ def add_post(request):
             pass
         instance.slug = slugified
         instance.save()
-        form.save_m2m()
+        if formset.is_valid():
+            for f in formset:
+                categ = f.save(commit=False)
+                categ.post = instance
+                categ.save()
         return redirect(reverse('profile'))
     data = {
         'form': form,
+        'categoryform': categoryform,
         'formset': formset
     }
     return render(request, 'add_edit_post.html', data)
@@ -130,6 +150,24 @@ def delete_post(request, slug):
     except Post.DoesNotExist:
         raise Http404('post not found')
     return redirect(reverse('profile'))
+
+
+def create_category(request):
+    form = CategoryForm(request.POST)
+    print(request.POST)
+    print(request.GET)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        slugified = slugify(form.cleaned_data['title'])
+        try:
+            cat = Category.objects.get_by_slug(slugified)
+            slugified = slugified + '-' + slugify(slugified)
+        except:
+            pass
+        instance.slug = slugified
+        instance.save()
+
+    return redirect(request.POST['path'])
 
 
 def category(request, slug):

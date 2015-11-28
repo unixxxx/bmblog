@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 
-from .models import Post, Post_Category
+from .models import Post, Post_Category, Category
 
 
 class LoginForm(forms.Form):
@@ -93,4 +93,10 @@ class PostForm(forms.ModelForm):
         exclude = ['user', 'date', 'slug', 'categories']
 
 
-CategoryFormSet = inlineformset_factory(Post, Post_Category, fields=['category'], extra=1)
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        exclude = ['slug']
+
+
+CategoryFormSet = inlineformset_factory(Post, Post_Category, fields=['category'], extra=1, form=CategoryForm)

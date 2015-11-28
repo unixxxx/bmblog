@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^posts/delete/(?P<slug>[-\w]+)/$', 'blog.views.delete_post', name='deletepost'),
     url(r'^posts/author/(?P<author>[-\w]+)/$', 'blog.views.post_by_author', name='postbyauthor'),
     url(r'^posts/(?P<slug>[-\w]+)/$', 'blog.views.post', name='post'),
+    url(r'^categories/create/$', 'blog.views.create_category', name='create_category'),
     url(r'^categories/(?P<slug>[-\w]+)/$', 'blog.views.category', name='category'),
     url(r'^user/register/$', 'blog.views.register', name='register'),
     url(r'^user/login/$', 'blog.views.login', name='login'),
