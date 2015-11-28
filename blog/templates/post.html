@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    <title xmlns="http://www.w3.org/1999/html">{{ post.title }}</title>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            <h1>{{ post.title }}</h1>
+
+            <p class="lead">
+                ავტორი: <a href="{{ post.get_url_by_author }}">{{ post.user.username }}</a>
+            </p>
+            <hr>
+            <p><span class="glyphicon glyphicon-time"></span> თარიღი: {{ post.date|date:"Y/M/d  (f)" }}</p>
+            <hr>
+            <p>კატეგორიები:
+                {% for category in post.categories.all %}
+                    <a href="{{ category.get_absolute_url }}">{{ category.title }} </a>
+                {% endfor %}
+            </p>
+            <hr>
+            <p>
+                {{ post.text|safe }}
+            </p>
+            <hr>
+            {% if post.allow_comments %}
+                <p class="lead">კომენტარები:</p>
+
+                {% if user.is_authenticated %}
+                    <form method="post">{% csrf_token %}
+                        {{ form|crispy }}
+                        <input type="submit" class="btn btn-default" value="დამატება">
+                    </form>
+                {% endif %}
+                <hr>
+                {% for comment in comments %}
+                    <p>ავტორი: <strong>{{ comment.user.username }}</strong> თარიღი: {{ comment.date|date:"Y/M/d  (f)" }}
+                    </p>
+                    <p>{{ comment.comment }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

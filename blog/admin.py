@@ -7,6 +7,10 @@ class CommentInline(admin.TabularInline):
     model = Comment
     extra = 0
 
+class CategoryInline(admin.TabularInline):
+    model = Post.categories.through
+    extra = 0
+
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
@@ -21,7 +25,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ['user__username', 'categories', 'active', 'date']
     search_fields = ['title']
     prepopulated_fields = {'slug': ('title',), }
-    inlines = [CommentInline]
+    inlines = [CommentInline, CategoryInline]
 
 
 @admin.register(Category)

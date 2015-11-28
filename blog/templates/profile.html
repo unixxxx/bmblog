@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            <a href="{% url 'addpost' %}" class="btn btn-success">პუბლიკაციის დამატება</a>
+
+            <ul class="list-unstyled">
+                {% for post in posts %}
+                    <li>
+                        <h4>
+                            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                        </h4>
+                        <p><span class="glyphicon glyphicon-time"></span> თარიღი: {{ post.date|date:"Y/M/d  (f)" }}</p>
+                        <p>კატეგორიები:
+                            {% for category in post.categories.all %}
+                                <a href="{{ category.get_absolute_url }}">{{ category.title }} </a>
+                            {% endfor %}
+                        </p>
+                        <p>{{ post.text|safe|truncatewords_html:50 }}</p>
+                        <a href="{% url 'editpost' post.slug %}" class="btn btn-primary">შეცვლა</a>
+                        <a href="{% url 'deletepost' post.slug %}" class="btn btn-danger">წაშლა</a>
+                        <hr>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

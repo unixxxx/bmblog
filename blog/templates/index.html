@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12 col-md-10 col-sm-10 col-xs-10 col-lg-offset-0 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">
+            {% for post in posts %}
+            	<div class="row">
+		            <h2>
+		                <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+		            </h2>
+		            <p class="lead">
+		                ავტორი: <a href="{{ post.get_url_by_author }}">{{ post.user.username }}</a>
+		            </p>
+		            <p><span class="glyphicon glyphicon-time"></span> თარიღი: {{ post.date|date:"Y/M/d  (f)" }}</p>
+		            <hr>
+                    <p>კატეგორიები:
+                        {% for category in post.categories.all %}
+                            <a href="{{ category.get_absolute_url }}">{{ category.title }} </a>
+                        {% endfor %}
+                    </p>
+
+                    <p>{{ post.text|safe|truncatewords_html:50 }}</p>
+                    <form method="get" action="{{post.get_absolute_url}}">
+		                  <input type="submit" class="btn btn-primary" value="სრულად"/>
+                    </form>
+		            <hr>
+                </div>
+            {% endfor %}
+            <ul class="pager">
+                {% if posts.has_previous %}
+                    <li class="previous">
+                        <a href="?page={{ posts.previous_page_number }}">უკან</a>
+                    </li>
+                {% endif %}
+
+                {% if posts.has_next %}
+                    <li class="next">
+                        <a href="?page={{ posts.next_page_number }}">წინ</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+{#        {% include 'sidebar.html' %}#}
+    </div>
+{% endblock %}
