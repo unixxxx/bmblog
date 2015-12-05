@@ -1,0 +1,4 @@
+Django==1.8.6
+django-ckeditor==5.0.2
+django-crispy-forms==1.5.2
+python-dateutil==2.4.2
